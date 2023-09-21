@@ -69,14 +69,6 @@ class Dashboard:
             for line in lines:
                 self.net_text.insert(tk.END, line + "\n")
 
-# funcion para el boton de escan guardados
-    def scans_hechos_button_clicked(self):
-            from History import History  
-            self.history_window = tk.Toplevel(self.root)
-            history = History(self.history_window,self.authenticated_username)
-            self.root.withdraw()
-            self.history_window.protocol("WM_DELETE_WINDOW",self.restore_dashboard)
-
 # funcion para el boton de rol de usuarios
     def usuario_button_clicked(self):
             from Rols import Rols  
