@@ -1,7 +1,7 @@
 import tkinter as tk                          # agregado para gui
 import sys                                    # agregado llamada al sistema
 from DatabaseManager import DatabaseManager   # agregado modificar valores de la base de datos
-from register import Register
+from Register import Register
 from tkinter.font import BOLD
 import tkinter.messagebox
 class Login:
@@ -86,7 +86,7 @@ class Login:
 
     #funcion para crear ventana de registro de usuario
     def open_register(self):
-        from register import Register
+        from Register import Register
         self.dash_window = tk.Toplevel(self.root)
         self.root.withdraw()
         self.dash_window.protocol("WM_DELETE_WINDOW", self.exit_program)

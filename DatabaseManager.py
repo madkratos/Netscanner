@@ -1,10 +1,15 @@
-import sqlite3   # agregado para la base de datos
+import sqlite3                             # agregado para la base de datos
+from cryptography.fernet import Fernet     # agrefado para la enciptacion de la base de datos, necesario instalar con "pip install cryptography  "
+import configparser                        # agregado para manejar el archivo config, puede que se necesario instalar con "pip install configparser"
 class DatabaseManager:
 # funcion principal para denotar la base de datos y sus parametros
-    def __init__(self, db_name='user.db'):
+    def __init__(self, db_name='user.db',  config_file='config.ini'):
         self.db_name = db_name
         self.conn = None
         self.cursor = None
+        self.config = configparser.ConfigParser()
+        self.config.read(config_file)
+        self.key = self.config.get('encryption', 'key')
 
 # fuencion para conectar a la base de datos
     def connect(self):
@@ -32,7 +37,8 @@ class DatabaseManager:
 # funcion para crear usuarios y pass
     def insert_user(self, username, password):
         self.connect()
-        self.cursor.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, password))
+        encrypted_password = self.encrypt_password(password)
+        self.cursor.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, encrypted_password))
         self.conn.commit()
         self.disconnect()
 
@@ -46,10 +52,19 @@ class DatabaseManager:
 # funcion para autenticar usuarios de la base de datos
     def authenticate_user(self, username, password):
         self.connect()
-        self.cursor.execute('SELECT * FROM users WHERE username = ? AND password = ?', (username, password))
+        cipher_suite = Fernet(self.key)
+        self.cursor.execute('SELECT * FROM users WHERE username = ?', (username,))
         user_data = self.cursor.fetchone()
+        if user_data:
+            encrypted_password = user_data[2]
+            try:
+                decrypted_password = cipher_suite.decrypt(encrypted_password.encode()).decode()
+                if decrypted_password == password:
+                    return user_data
+            except Exception as e:
+                print("Error:", e)
         self.disconnect()
-        return user_data
+        return None
     
 # funcion para obtener usuarios de la base de datos
     def get_usernames(self):
@@ -66,6 +81,12 @@ class DatabaseManager:
         passwords = [row[0] for row in self.cursor.fetchall()]
         self.disconnect()
         return passwords
+    
+# funcion para encriptar el pass con Fernet encryption key
+    def encrypt_password(self, password):
+        cipher_suite = Fernet(self.key)
+        encrypted_password = cipher_suite.encrypt(password.encode()).decode()
+        return encrypted_password
 
 # funcion para obtener la existencia del usuario
     def user_exists(self, username):
@@ -74,3 +95,6 @@ class DatabaseManager:
         count = self.cursor.fetchone()[0]
         self.disconnect()
         return count > 0
+    
+if __name__ == "__main__":
+    db_manager = DatabaseManager()
