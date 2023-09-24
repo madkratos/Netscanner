@@ -2,7 +2,7 @@ import tkinter as tk                 #Libreria para crear los diseños y la inte
 import sqlite3                       #libreria para manejar base de dato
 import tkinter.messagebox            #libreria para mensajes de error y demas
 from tkinter.font import BOLD        #libreria para poner en negrita la fuente de la interfaz
-//fede
+#jose
 class Register:
 
 # Función para para contruir la ventana con diseños desde la ventana login
