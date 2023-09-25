@@ -1,12 +1,13 @@
 #!bin/python3
-import subprocess               # agregado para ip procesing
-import ipaddress                # agregado para ip rage manage
-import threading                # agregado para threading
-import socket                   # agregado para el manejo de la ip y la subnetmask para optener el rango de la red 
-import psutil                   # agregado para obener la subnet mask necesario instalar con pip install psutil
-import tkinter as tk            # agregado para gui
-import concurrent.futures       # agregado para thread pooling
-from tkinter import filedialog  # agregado para guardado de texto
+import subprocess                   # agregado para ip procesing
+import ipaddress                    # agregado para ip rage manage
+import threading                    # agregado para threading
+import socket                       # agregado para el manejo de la ip y la subnetmask para optener el rango de la red 
+import psutil                       # agregado para obener la subnet mask necesario instalar con pip install psutil
+import tkinter as tk                # agregado para gui
+from tkinter import  ttk            # agregado para la lista de interfaz
+import concurrent.futures           # agregado para thread pooling
+from tkinter import filedialog      # agregado para guardado de texto
 class NetScanner:
 # funcion para la GUI
     def __init__(self, root,authenticated_username):
@@ -24,10 +25,14 @@ class NetScanner:
         self.detect_ip_label.place(x=20, y=1)
 
         self.ip_entry = tk.Entry(root)
-        self.ip_entry.place(x=130, y=70)
+        self.ip_entry.place(x=130, y=75,height=20)
 
         self.scan_button = tk.Button(root, text="Scan Network", font=('Times', 11, 'bold'), bg='#fff', bd=2, fg="#0D7FD8", command=self.scan_button_clicked)
         self.scan_button.place(x=10, y=71)
+
+        self.interface_list = ttk.Combobox(state="readonly",values=["Ethernet", "Wi-Fi"],width=8)
+        self.interface_list.set("Interface")
+        self.interface_list.place(x=5, y=150)
 
         self.pause_button = tk.Button(root, text="Detectar",font=('Times', 11, 'bold'), bg='#fff', bd=2, fg="#0D7FD8", command=self.detect_button_clicked)
         self.pause_button.place(x=5, y=110)  
@@ -86,7 +91,7 @@ class NetScanner:
                 for line in lines:
                     file.write(line + '\n')
 
-            self.result_label.config(text="    Guardado")
+            self.result_label.config(text="\tGuardado")
         else:
             self.result_label.config(text="Operación cancelada.")
 
@@ -120,7 +125,8 @@ class NetScanner:
 
 
 # funcion generar el rango de ip cidr
-    def generate_cidr(self,interface_name="Ethernet"):
+    def generate_cidr(self):
+        interface_name = self.interface_list.get()
         try:
             interfaces = psutil.net_if_addrs()
             if interface_name in interfaces:
@@ -149,13 +155,13 @@ class NetScanner:
             
 # funcion para el boton de generar rango
     def detect_button_clicked(self):
-        cidr_format = self.generate_cidr(interface_name="Ethernet")
+        cidr_format = self.generate_cidr()
         if cidr_format:
              self.ip_entry.delete(0, tk.END) 
              self.ip_entry.insert(0, cidr_format)
              self.result_label.config(text="")
         else:
-            self.result_label.config(text="Fallo al generar")
+            self.result_label.config(text="\tFallo al generar")
 
 
 # funcion para el boton de escaneado
@@ -203,14 +209,14 @@ class NetScanner:
 
                 for future in concurrent.futures.as_completed(futures):
                     if self.paused:
-                        self.result_label.config(text="Escaneo pausado")
+                        self.result_label.config(text="      Escaneo pausado")
                         break  
                     ip = futures[future]
                     scanned_hosts += 1
                     progress = int((scanned_hosts / total_hosts) * 100)
                     self.result_label.config(text=f"Escaneo en progreso...... {progress}%")
         if not self.paused:
-            self.result_label.config(text="Escaneo completo!")
+            self.result_label.config(text="       Escaneo completo!")
 
 # funcuion que imprime los ips escaneados que responden
     def scan_host(self, ip):
