@@ -30,9 +30,11 @@ class NetScanner:
         self.scan_button = tk.Button(root, text="Scan Network", font=('Times', 11, 'bold'), bg='#fff', bd=2, fg="#0D7FD8", command=self.scan_button_clicked)
         self.scan_button.place(x=10, y=71)
 
-        self.interface_list = ttk.Combobox(state="readonly",values=["Ethernet", "Wi-Fi"],width=8)
-        self.interface_list.set("Interface")
-        self.interface_list.place(x=5, y=150)
+        self.interfaces = ["Ethernet", "Wi-Fi"]
+        self.selected_interface = tk.StringVar()
+        self.selected_interface.set("Interface")  
+        self.interface_dropdown = ttk.Combobox(root, textvariable=self.selected_interface, values=self.interfaces, state="readonly",width=8)
+        self.interface_dropdown.place(x=5, y=150)
 
         self.pause_button = tk.Button(root, text="Detectar",font=('Times', 11, 'bold'), bg='#fff', bd=2, fg="#0D7FD8", command=self.detect_button_clicked)
         self.pause_button.place(x=5, y=110)  
@@ -126,7 +128,7 @@ class NetScanner:
 
 # funcion generar el rango de ip cidr
     def generate_cidr(self):
-        interface_name = self.interface_list.get()
+        interface_name = self.selected_interface.get()
         try:
             interfaces = psutil.net_if_addrs()
             if interface_name in interfaces:
