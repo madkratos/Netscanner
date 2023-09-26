@@ -1,6 +1,8 @@
 import tkinter as tk            # agregado para gui
 from tkinter import filedialog  # agregado para cargar/guardar texto
 from Register import Register   # agregado para centrar la ventana
+# funcion para el boton de leer
+
 class Notes:
 # funcion para la GUI
     def __init__(self, root,authenticated_username):
