@@ -1,12 +1,13 @@
 import tkinter as tk                 #Libreria para crear los diseños y la interfaz
 import sqlite3                       #libreria para manejar base de dato
 import tkinter.messagebox            #libreria para mensajes de error y demas
+from DatabaseManager import DatabaseManager #Libreria para usar para poder manipular la base de datos
 from tkinter.font import BOLD        #libreria para poner en negrita la fuente de la interfaz
-#jose
-class Register:
 
+class Register:
 # Función para para contruir la ventana con diseños desde la ventana login
     def __init__(self, root):
+        self.db_manager = DatabaseManager()
         self.root = root
         self.root.title('Registrar Usuario.')
         self.root.geometry('350x500+800+200')
@@ -34,30 +35,23 @@ class Register:
         self.user_entry = tk.Entry(frame_form_fill, font=('Times', 16))
         self.user_entry.pack(fill=tk.X, padx=20,pady=5)
 
-        correo_label = tk.Label(frame_form_fill, text="Correo:", font=('Times', 14) ,fg="black",bg='#fcfcfc', anchor="w")
+        correo_label = tk.Label(frame_form_fill, text="Contraseña:", font=('Times', 14) ,fg="black",bg='#fcfcfc', anchor="w")
         correo_label.pack(fill=tk.X, padx=20,pady=5)
-        self.correo_entry = tk.Entry(frame_form_fill, font=('Times', 16))
-        self.correo_entry.pack(fill=tk.X, padx=20,pady=5)
+        self.pass_entry = tk.Entry(frame_form_fill, font=('Times', 16))
+        self.pass_entry.pack(fill=tk.X, padx=20,pady=5)
+        self.pass_entry.config(show="*")
 
-        password_label = tk.Label(frame_form_fill, text="Contraseña:", font=('Times', 16),fg="black",bg='#fcfcfc' , anchor="w")
+        password_label = tk.Label(frame_form_fill, text="Confirmar contraseña:", font=('Times', 16),fg="black",bg='#fcfcfc' , anchor="w")
         password_label.pack(fill=tk.X, padx=20,pady=5)
         self.password_entry = tk.Entry(frame_form_fill, font=('Times', 14))
         self.password_entry.pack(fill=tk.X, padx=20,pady=5)
         self.password_entry.config(show="*")
 
-        register = tk.Button(frame_form_fill,text="Registrase",font=('Times', 15,BOLD),bg='#0D7FD8', bd=2,fg="#fff", command=self.agregar_usuario)
+        register = tk.Button(frame_form_fill,text="Registrase",font=('Times', 15,BOLD),bg='#0D7FD8', bd=2,fg="#fff", command=self.register_user)
         register.pack(fill=tk.X, padx=20,pady=5)
 
         cerrar = tk.Button(frame_form_fill,text="volver",font=('Times', 15,BOLD),bg='#fff', bd=2,fg="black",command=self.logout_button_clicked)
         cerrar.pack(fill=tk.X, padx=20,pady=5)    
-
-#Funcion para centrar las ventanas
-    def centrar_ventana(root,aplicacion_ancho,aplicacion_largo):    
-        pantall_ancho = root.winfo_screenwidth()
-        pantall_largo = root.winfo_screenheight()
-        x = int((pantall_ancho/2) - (aplicacion_ancho/2))
-        y = int((pantall_largo/2) - (aplicacion_largo/2))
-        return root.geometry(f"{aplicacion_ancho}x{aplicacion_largo}+{x}+{y}")
     
 #Funcion para eliminar la ventana registrarse al presionar el boton volver
     def restore_dashboard(self):
@@ -72,27 +66,25 @@ class Register:
         self.login_window.protocol("WM_DELETE_WINDOW",self.restore_dashboard)
 
 #Funcion para agregar el usuario a la base de datos
-    def agregar_usuario(self):
-            user = self.user_entry.get()
-            password = self.password_entry.get()
-            correo = self.correo_entry.get()
-
-            if len(user) != 0 and len(password) != 0 and len(correo):
-                conn = sqlite3.connect('user.db')
-                cursor = conn.cursor()
-                cursor.execute("SELECT id FROM users WHERE username=?", (user,))
-                usuario_existente = cursor.fetchone()
-                if usuario_existente:
-                    conn.close()
-                    return tkinter.messagebox.showerror(title="error", message="El usuario ingresado ya existe.")
-                else:
-                    cursor.execute("INSERT INTO users (username, password) VALUES (?,?)", (user, password))
-                    conn.commit()
-                    conn.close()
-                    return tkinter.messagebox.showinfo(title="Registro exitoso.", message="Usuario registrado con exito.")
+    def register_user(self): 
+        username = self.user_entry.get()
+        password = self.password_entry.get()
+        passwordv = self.pass_entry.get()
+        conn = sqlite3.connect('user.db')
+        cursor = conn.cursor()
+        cursor.execute("SELECT id FROM users WHERE username=?", (username,))
+        usuario_existente = cursor.fetchone()
+        if usuario_existente:
+            conn.close()
+            tkinter.messagebox.showerror(title="error", message="El usuario ingresado ya existe.")
+        elif password == passwordv:
+            if username:
+                self.db_manager.insert_user(username, password)
+                tkinter.messagebox.showinfo(title="Registro exitoso.", message="Usuario registrado con exito.")
             else:
-                return tkinter.messagebox.showerror(title="error", message="No has ingresado nada en los campos.")
-
+                tkinter.messagebox.showerror(title="error", message="No has ingresado nada en los campos.")
+        else:
+            tkinter.messagebox.showerror(title="error", message="Las contraseñas no son iguales.")        
     
 
 def main():
