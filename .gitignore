@@ -1,0 +1,11 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+# Archivo de configuracion para la encriptacion
+config.ini
+
+# Script para generar la clave de encriptacion
+key.py
+
+# readme
+README.md
