@@ -1,6 +1,7 @@
 import tkinter as tk            # agregado para gui
 from tkinter import filedialog  # agregado para cargar/guardar texto
 from Register import Register   # agregado para centrar la ventana
+import tkinter.messagebox 
 # funcion para el boton de leer
 
 class Notes:
@@ -30,7 +31,7 @@ class Notes:
         self.back_button.place(x=290, y=80)
 
         
-        self.title_label = tk.Label(root, text="Ingrese el texto que dese guardar en la plantilla blanca", font=('Times', 11), fg="#0D7FD8", bg='white')
+        self.title_label = tk.Label(root, text="Ingrese el texto que desee guardar en la plantilla blanca", font=('Times', 11), fg="#0D7FD8", bg='white')
         self.title_label.place(x=15, y=120)
 
         self.result_label = tk.Label(root, text="", font=('Times', 10), fg="#0D7FD8", bg='#fff', pady=5)
@@ -60,7 +61,7 @@ class Notes:
             except FileNotFoundError:
                 self.result_label.config(text="Lista no encontrada.")
         else:
-            self.result_label.config(text="No se eligio la lista")
+            tkinter.messagebox.showerror(title="error", message="Operacion cancelada.")
 
 # funcion para el boton de borrar
     def reset_button_clicked(self):
@@ -88,7 +89,7 @@ class Notes:
                     file.write(line + '\n')
             self.result_label.config(text="    Guardado")
         else:
-            self.result_label.config(text="Operación cancelada.")
+            tkinter.messagebox.showerror(title="error", message="Operacion cancelada.")
 
 
 # funcion para restaurar la ventana 
