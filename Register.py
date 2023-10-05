@@ -80,12 +80,21 @@ class Register:
             usuario_existente = cursor.fetchone()
             if usuario_existente:
                 conn.close()
+                self.user_entry.delete(0, 'end')
+                self.password_entry.delete(0, 'end')
+                self.pass_entry.delete(0, 'end')
                 tkinter.messagebox.showerror(title="error", message="El usuario ingresado ya existe.")
             elif password == passwordv:
                 if username:
                     self.db_manager.insert_user(username, password)
+                    self.user_entry.delete(0, 'end')
+                    self.password_entry.delete(0, 'end')
+                    self.pass_entry.delete(0, 'end')
                     tkinter.messagebox.showinfo(title="Registro exitoso.", message="Usuario registrado con exito.")
             else:
+                self.user_entry.delete(0, 'end')
+                self.password_entry.delete(0, 'end')
+                self.pass_entry.delete(0, 'end')
                 tkinter.messagebox.showerror(title="error", message="Las contraseñas no son iguales.")
         else: 
             tkinter.messagebox.showerror(title="error", message="No has ingresado todos los campos.")

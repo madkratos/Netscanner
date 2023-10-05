@@ -65,9 +65,11 @@ class Login:
                 self.authenticated_username = username
                 self.open_dashboard() 
             else:
-                return tkinter.messagebox.showerror(title="error",message="El usuario o contraseña es incorrecto.")
+                    self.username_entry.delete(0, 'end')
+                    self.password_entry.delete(0, 'end')
+                    return tkinter.messagebox.showerror(title="error",message="El usuario o contraseña es incorrecto.")
         else:
-            return tkinter.messagebox.showerror(title="error", message="No has ingresado nada en los campos.")
+            return tkinter.messagebox.showerror(title="error", message="Complete todo los campos.")
 
 
     
