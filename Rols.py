@@ -1,5 +1,6 @@
 import tkinter as tk                          # agregado para gui
 from DatabaseManager import DatabaseManager   # agregado modificar valores de la base de datos
+import tkinter.messagebox            #libreria para mensajes de error y demas
 class Rols:
 # funcion para la GUI
     def __init__(self, root,authenticated_username):
@@ -85,10 +86,10 @@ class Rols:
         password = self.pass_entry.get()
         if username and password:
             self.db_manager.insert_user(username, password)
-            self.result_label.config(text=f"Usuario {username} agregado con éxito")
+            tkinter.messagebox.showinfo(title="Registro exitoso.", message="Usuario registrado con exito.")
             self.refresh_button_clicked()
         else:
-            self.result_label.config(text="Por favor, complete los campos")
+            tkinter.messagebox.showerror(title="error", message="No has ingresado todos los campos.")
 
 # funcion para el boton de borrar usuario
     def delete_user(self):
@@ -97,12 +98,13 @@ class Rols:
         if username_to_delete:
             if self.db_manager.user_exists(username_to_delete):
                 self.db_manager.delete_user(username_to_delete)
-                self.result_label.config(text=f"Usuario {username_to_delete} borrado con éxito")
+                tkinter.messagebox.showinfo(title="Registro exitoso.", message="Usuario registrado con exito.") 
                 self.refresh_button_clicked()
             else:
-                self.result_label.config(text="El usuario no existe.")
+                tkinter.messagebox.showerror(title="error", message="El usuario no exite.")
+
         else:
-            self.result_label.config(text="Por favor, ingrese un nombre de usuario.")
+                tkinter.messagebox.showerror(title="error", message="Por favor, ingrese un usuario.")
 
 
 #funcion que da inicio al loop de la GUI 

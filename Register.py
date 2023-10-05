@@ -50,9 +50,12 @@ class Register:
         register = tk.Button(frame_form_fill,text="Registrase",font=('Times', 15,BOLD),bg='#0D7FD8', bd=2,fg="#fff", command=self.register_user)
         register.pack(fill=tk.X, padx=20,pady=5)
 
-        cerrar = tk.Button(frame_form_fill,text="volver",font=('Times', 15,BOLD),bg='#fff', bd=2,fg="black",command=self.logout_button_clicked)
-        cerrar.pack(fill=tk.X, padx=20,pady=5)    
-    
+        volver = tk.Button(frame_form_fill,text="volver",font=('Times', 15,BOLD),bg='#fff', bd=2,fg="black",command=self.logout_button_clicked)
+        volver.pack(fill=tk.X, padx=20,pady=5)    
+       
+        self.root.bind("<Return>", lambda event: self.register_user())
+        self.root.bind("<Escape>", lambda event: self.logout_button_clicked())
+
 #Funcion para eliminar la ventana registrarse al presionar el boton volver
     def restore_dashboard(self):
         self.dash_window.destroy()
@@ -70,21 +73,23 @@ class Register:
         username = self.user_entry.get()
         password = self.password_entry.get()
         passwordv = self.pass_entry.get()
-        conn = sqlite3.connect('user.db')
-        cursor = conn.cursor()
-        cursor.execute("SELECT id FROM users WHERE username=?", (username,))
-        usuario_existente = cursor.fetchone()
-        if usuario_existente:
-            conn.close()
-            tkinter.messagebox.showerror(title="error", message="El usuario ingresado ya existe.")
-        elif password == passwordv:
-            if username:
-                self.db_manager.insert_user(username, password)
-                tkinter.messagebox.showinfo(title="Registro exitoso.", message="Usuario registrado con exito.")
+        if username and passwordv and password:
+            conn = sqlite3.connect('user.db')
+            cursor = conn.cursor()
+            cursor.execute("SELECT id FROM users WHERE username=?", (username,))
+            usuario_existente = cursor.fetchone()
+            if usuario_existente:
+                conn.close()
+                tkinter.messagebox.showerror(title="error", message="El usuario ingresado ya existe.")
+            elif password == passwordv:
+                if username:
+                    self.db_manager.insert_user(username, password)
+                    tkinter.messagebox.showinfo(title="Registro exitoso.", message="Usuario registrado con exito.")
             else:
-                tkinter.messagebox.showerror(title="error", message="No has ingresado nada en los campos.")
-        else:
-            tkinter.messagebox.showerror(title="error", message="Las contraseñas no son iguales.")        
+                tkinter.messagebox.showerror(title="error", message="Las contraseñas no son iguales.")
+        else: 
+            tkinter.messagebox.showerror(title="error", message="No has ingresado todos los campos.")
+
     
 
 def main():

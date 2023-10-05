@@ -51,6 +51,9 @@ class Login:
         cerrar = tk.Button(frame_form_fill,text="Cerrar",font=('Times', 15,BOLD),bg='#0D7FD8', bd=2,fg="#fff",command=self.exit_program)
         cerrar.pack(fill=tk.X, padx=20,pady=5)
 
+        self.root.bind("<Return>", lambda event: self.authenticate_user())
+        self.root.bind("<Escape>", lambda event: self.exit_program())
+
 
 # funcion para validar usuario en la base de datos
     def authenticate_user(self):
