@@ -3,7 +3,7 @@ from cryptography.fernet import Fernet     # agrefado para la enciptacion de la 
 import configparser                        # agregado para manejar el archivo config, puede que se necesario instalar con "pip install configparser"
 class DatabaseManager:
 # funcion principal para denotar la base de datos y sus parametros
-    def __init__(self, db_name='user.db',  config_file='config.ini'):
+    def __init__(self, db_name='user.db', config_file='config.ini'):
         self.db_name = db_name
         self.conn = None
         self.cursor = None
@@ -22,7 +22,7 @@ class DatabaseManager:
             self.conn.close()
 
 # funcion para crear la tabla de usuarios
-    def create_tables(self):
+    def create_user_tables(self):
         self.connect()
         self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS users (
@@ -33,6 +33,71 @@ class DatabaseManager:
         ''')
         self.conn.commit()
         self.disconnect()
+
+# funcion para crear la tabla de tareas
+    def create_task_tables(self):
+        self.connect()
+        self.cursor.execute('''
+            CREATE TABLE IF NOT EXISTS tasks (
+                task_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT NON NULL,
+                state TEXT,
+                description TEXT
+            )
+        ''')
+        self.conn.commit()
+        self.disconnect()
+
+# funcion para crear tareas
+    def insert_task(self, title,state, description):
+        self.connect()
+        self.cursor.execute('INSERT INTO tasks (title, state, description) VALUES (?, ?, ?)', (title, state, description))
+        self.conn.commit()
+        self.disconnect()
+
+# funcion para borrar tareas
+    def delete_task(self, title):
+        self.connect()
+        self.cursor.execute('DELETE FROM tasks WHERE title = ?', (title,))
+        self.conn.commit()
+        self.disconnect()
+
+# funcion para obtener las tareas de la base de datos
+    def get_task(self):
+        self.connect()
+        self.cursor.execute('SELECT task_id,title,state, description FROM tasks')
+        tasks =[]
+        for row in self.cursor.fetchall():
+            task = {
+                "task_id": row[0],
+                "title": row[1],
+                "state": row[2],
+                "description": row[3]
+            }
+            tasks.append(task)
+        self.disconnect()
+        return tasks
+
+# funcion para obtener la existencia de la tarea
+    def title_exists(self, title):
+        self.connect()
+        self.cursor.execute('SELECT COUNT(*) FROM tasks WHERE title = ?', (title,))
+        count = self.cursor.fetchone()[0]
+        self.disconnect()
+        return count > 0
+
+#funcion para editar los datos de las tareas
+    def update_task(self, title, new_state, new_description):
+        try:
+            self.connect()
+            query = "UPDATE tasks SET state=?, description=? WHERE title=?"
+            self.cursor.execute(query, (new_state, new_description, title))
+            self.conn.commit()
+        except sqlite3.Error as e:
+            print("Database error:", e)
+        finally:
+            self.disconnect()  
+
 
 # funcion para crear usuarios y pass
     def insert_user(self, username, password):
@@ -81,12 +146,13 @@ class DatabaseManager:
         passwords = [row[0] for row in self.cursor.fetchall()]
         self.disconnect()
         return passwords
-    
+
 # funcion para encriptar el pass con Fernet encryption key
     def encrypt_password(self, password):
         cipher_suite = Fernet(self.key)
         encrypted_password = cipher_suite.encrypt(password.encode()).decode()
         return encrypted_password
+    
 
 # funcion para obtener la existencia del usuario
     def user_exists(self, username):

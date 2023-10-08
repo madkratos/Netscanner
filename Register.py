@@ -1,108 +1,95 @@
-import tkinter as tk                 #Libreria para crear los diseños y la interfaz
-import sqlite3                       #libreria para manejar base de dato
-import tkinter.messagebox            #libreria para mensajes de error y demas
-from DatabaseManager import DatabaseManager #Libreria para usar para poder manipular la base de datos
-from tkinter.font import BOLD        #libreria para poner en negrita la fuente de la interfaz
-
+import customtkinter                          # agregado para la gui moderna
+import tkinter as tk                          #Libreria para crear los diseños y la interfaz
+import tkinter.messagebox                     #libreria para mensajes de error y demas
+from DatabaseManager import DatabaseManager   # agregado modificar valores de la base de datos
 class Register:
 # Función para para contruir la ventana con diseños desde la ventana login
-    def __init__(self, root):
+    def __init__(self, root,authenticated_username):
         self.db_manager = DatabaseManager()
+        self.db_manager.create_user_tables()
         self.root = root
+        self.authenticated_username=authenticated_username
         self.root.title('Registrar Usuario.')
         self.root.geometry('350x500+800+200')
-        self.root.config(bg='#fcfcfc')
-        self.root.resizable(width=0, height=0)
-
-        #frame_form
-        frame_form = tk.Frame(self.root, bd=0, relief=tk.SOLID, bg='#fcfcfc')
-        frame_form.pack(side="right",expand=tk.YES,fill=tk.BOTH)
-        #frame_form
         
-        #frame_form_top
-        frame_form_top = tk.Frame(frame_form,height = 50, bd=0, relief=tk.SOLID,bg='black')
-        frame_form_top.pack(side="top",fill=tk.X)
-        title = tk.Label(frame_form_top, text="Registrar Usuario",font=('Times', 30), fg="white",bg='#0D7FD8',pady=50)
-        title.pack(expand=tk.YES,fill=tk.BOTH)
-        #end frame_form_top
+        self.frame = customtkinter.CTkFrame(master=root,width=320,height=500,corner_radius=10)
+        self.frame.place(relx=0.5, rely=0.3, anchor=tkinter.CENTER)
+        self.title = customtkinter.CTkLabel(master=self.frame,text="Registrar Usuario",font=customtkinter.CTkFont(size=35))
+        self.title.place(relx=0.5, rely=0.3, anchor=tkinter.CENTER)
 
-        #frame_form_fill 
-        frame_form_fill = tk.Frame(frame_form,height = 30,  bd=0, relief=tk.SOLID,bg='#fcfcfc')
-        frame_form_fill.pack(side="bottom",expand=tk.YES,fill=tk.BOTH)
 
-        user_label = tk.Label(frame_form_fill, text="Usuario:", font=('Times', 14) ,fg="black",bg='#fcfcfc', anchor="w")
-        user_label.pack(fill=tk.X, padx=20,pady=5)
-        self.user_entry = tk.Entry(frame_form_fill, font=('Times', 16))
-        self.user_entry.pack(fill=tk.X, padx=20,pady=5)
+        self.user_label = customtkinter.CTkLabel(master=self.frame,text="Usuario:",font=customtkinter.CTkFont(size=15))
+        self.user_label.place(relx=0.2, rely=0.5, anchor=tkinter.CENTER)
 
-        correo_label = tk.Label(frame_form_fill, text="Contraseña:", font=('Times', 14) ,fg="black",bg='#fcfcfc', anchor="w")
-        correo_label.pack(fill=tk.X, padx=20,pady=5)
-        self.pass_entry = tk.Entry(frame_form_fill, font=('Times', 16))
-        self.pass_entry.pack(fill=tk.X, padx=20,pady=5)
-        self.pass_entry.config(show="*")
+        self.user_entry = customtkinter.CTkEntry(master=self.frame,width=200,height=30,corner_radius=10)
+        self.user_entry.place(relx=0.5, rely=0.6, anchor=tkinter.CENTER)
 
-        password_label = tk.Label(frame_form_fill, text="Confirmar contraseña:", font=('Times', 16),fg="black",bg='#fcfcfc' , anchor="w")
-        password_label.pack(fill=tk.X, padx=20,pady=5)
-        self.password_entry = tk.Entry(frame_form_fill, font=('Times', 14))
-        self.password_entry.pack(fill=tk.X, padx=20,pady=5)
-        self.password_entry.config(show="*")
+        self.password_label = customtkinter.CTkLabel(master=self.frame,text="Contraseña:",font=customtkinter.CTkFont(size=15))
+        self.password_label.place(relx=0.2, rely=0.7,anchor=tkinter.CENTER)
 
-        register = tk.Button(frame_form_fill,text="Registrase",font=('Times', 15,BOLD),bg='#0D7FD8', bd=2,fg="#fff", command=self.register_user)
-        register.pack(fill=tk.X, padx=20,pady=5)
+        self.pass_entry = customtkinter.CTkEntry(master=self.frame,width=200,height=30,corner_radius=10,show="*")
+        self.pass_entry.place(relx=0.5, rely=0.8, anchor=tkinter.CENTER)
 
-        volver = tk.Button(frame_form_fill,text="volver",font=('Times', 15,BOLD),bg='#fff', bd=2,fg="black",command=self.logout_button_clicked)
-        volver.pack(fill=tk.X, padx=20,pady=5)    
-       
-        self.root.bind("<Return>", lambda event: self.register_user())
-        self.root.bind("<Escape>", lambda event: self.logout_button_clicked())
 
+        self.register = customtkinter.CTkButton(master =self.frame, text="Registrase", command=self.register_user)
+        self.register.place(x=160, y=460, anchor=customtkinter.CENTER)
+
+        self.cerrar = customtkinter.CTkButton(master =root, text="volver",fg_color="#3D59AB", command=self.back_button_clicked)
+        self.cerrar.place(x=175, y=450, anchor=customtkinter.CENTER)
+
+
+#Funcion para centrar las ventanas
+    def centrar_ventana(root,aplicacion_ancho,aplicacion_largo):    
+        pantall_ancho = root.winfo_screenwidth()
+        pantall_largo = root.winfo_screenheight()
+        x = int((pantall_ancho/2) - (aplicacion_ancho/2))
+        y = int((pantall_largo/2) - (aplicacion_largo/2))
+        return root.geometry(f"{aplicacion_ancho}x{aplicacion_largo}+{x}+{y}")
+    
 #Funcion para eliminar la ventana registrarse al presionar el boton volver
     def restore_dashboard(self):
-        self.dash_window.destroy()
+        self.login_window.destroy()
     
 #Funcion para volver a inicio de sesion al presionar el botos volver 
-    def logout_button_clicked(self):
-        from Login import Login  
-        self.login_window = tk.Toplevel(self.root)
-        login = Login(self.login_window)
+    def back_button_clicked(self):
+        from Rols import Rols  
+        self.login_window = customtkinter.CTkToplevel(self.root)
         self.root.withdraw()
         self.login_window.protocol("WM_DELETE_WINDOW",self.restore_dashboard)
+        customtkinter.set_appearance_mode("Dark") 
+        customtkinter.set_default_color_theme("blue")
+        rol = Rols(self.login_window,self.authenticated_username)
 
-#Funcion para agregar el usuario a la base de datos
-    def register_user(self): 
+        
+# funcion para el boton de crear usuario
+    def register_user(self):
         username = self.user_entry.get()
-        password = self.password_entry.get()
-        passwordv = self.pass_entry.get()
-        if username and passwordv and password:
-            conn = sqlite3.connect('user.db')
-            cursor = conn.cursor()
-            cursor.execute("SELECT id FROM users WHERE username=?", (username,))
-            usuario_existente = cursor.fetchone()
-            if usuario_existente:
-                conn.close()
-                self.user_entry.delete(0, 'end')
-                self.password_entry.delete(0, 'end')
-                self.pass_entry.delete(0, 'end')
+        password = self.pass_entry.get()
+        if username and password:
+            if self.db_manager.user_exists(username):   
                 tkinter.messagebox.showerror(title="error", message="El usuario ingresado ya existe.")
-            elif password == passwordv:
-                if username:
-                    self.db_manager.insert_user(username, password)
-                    self.user_entry.delete(0, 'end')
-                    self.password_entry.delete(0, 'end')
-                    self.pass_entry.delete(0, 'end')
-                    tkinter.messagebox.showinfo(title="Registro exitoso.", message="Usuario registrado con exito.")
+                self.user_entry.delete(0, tk.END)
+                self.pass_entry.delete(0, tk.END)
+                self.user_entry.focus()
             else:
-                self.user_entry.delete(0, 'end')
-                self.password_entry.delete(0, 'end')
-                self.pass_entry.delete(0, 'end')
-                tkinter.messagebox.showerror(title="error", message="Las contraseñas no son iguales.")
-        else: 
-            tkinter.messagebox.showerror(title="error", message="No has ingresado todos los campos.")
+                option= tkinter.messagebox.askyesno('Confirme la operacion', 'Esta seguro de querer agregar este usuario?') 
+                if option == True:
+                    self.db_manager.insert_user(username, password)
+                    tkinter.messagebox.showinfo(title="Registro exitoso.", message="Usuario registrado con exito.")
+                    self.user_entry.delete(0, tk.END)
+                    self.pass_entry.delete(0, tk.END)
+                    self.user_entry.focus()
+                else:
+                    tkinter.messagebox.showinfo(title="Operacion cancelada.", message="Usuario no registrado.")
+                    self.user_entry.delete(0, tk.END)
+                    self.pass_entry.delete(0, tk.END)
+                    self.user_entry.focus()
+        else:
+            return tkinter.messagebox.showerror(title="error", message="No has ingresado nada en los campos.")
 
-    
 
 def main():
-    root = tk.Tk()
+    root = customtkinter.CTk()
     register = Register(root)
     root.mainloop()
 

@@ -2,7 +2,7 @@ import tkinter as tk  # agregado para gui
 import customtkinter  # nuevo agregado para la nueva gui instalado con "pip3 install customtkinter"
 import threading      # nuevo agregado para manejar los threts para la impresion
 import time           # nuevo agregado para medir el tiempo de impresion
-class Dashboard:
+class DashboardUser:
     def __init__(self, root,authenticated_username):
         self.root = root
         self.authenticated_username = authenticated_username
@@ -12,20 +12,17 @@ class Dashboard:
         self.frame = customtkinter.CTkFrame(master=root,width=330,height=70,corner_radius=10)
         self.frame.place(x=10, y=10)
 
-        self.title = customtkinter.CTkLabel(master=self.frame,text=f"Hola Admin!",font=customtkinter.CTkFont(size=35))
+        self.title = customtkinter.CTkLabel(master=self.frame,text=f"Hola {self.authenticated_username}!",font=customtkinter.CTkFont(size=35))
         self.title.place(x=10, y=10)
 
         self.login = customtkinter.CTkButton(master =self.frame, text="Logout", command=self.logout_button_clicked,width=10,height=30,corner_radius=8,fg_color="#3D59AB")
         self.login.place(x=260 ,y=10)
 
         self.login = customtkinter.CTkButton(master =root, text="Realizar Scan", command=self.scan_button_clicked,width=10,height=30,corner_radius=8)
-        self.login.place(relx=0.1, rely=0.2)
-
-        self.login = customtkinter.CTkButton(master =root, text="Rol de Usuarios", command=self.usuario_button_clicked,width=10,height=30,corner_radius=8)
-        self.login.place(relx=0.39, rely=0.2)
+        self.login.place(relx=0.20, rely=0.2)
 
         self.login = customtkinter.CTkButton(master =root, text="Tareas", command=self.task_button_clicked,width=10,height=30,corner_radius=8)
-        self.login.place(relx=0.72, rely=0.2)
+        self.login.place(relx=0.60, rely=0.2)
         
         self.net_text = tk.Text(root, height=20, width=42,bg="black",fg="#7FFF00")
         self.net_text.place(x=4, y=160)
@@ -115,7 +112,7 @@ class Dashboard:
 # funcion para la ventana principal de dashboard
 def main():
     root = customtkinter.CTk()
-    dash= Dashboard(root)
+    dash_user= DashboardUser(root)
     root.mainloop()
 
 if __name__ == "__main__":
