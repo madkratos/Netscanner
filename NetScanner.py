@@ -1,12 +1,13 @@
 #!bin/python3
-import subprocess               # agregado para ip procesing
-import ipaddress                # agregado para ip rage manage
-import threading                # agregado para threading
-import socket                   # agregado para el manejo de la ip y la subnetmask para optener el rango de la red 
-import psutil                   # agregado para obener la subnet mask necesario instalar con pip install psutil
-import tkinter as tk            # agregado para gui
-import concurrent.futures       # agregado para thread pooling
-from tkinter import filedialog  # agregado para guardado de texto
+import subprocess                   # agregado para ip procesing
+import ipaddress                    # agregado para ip rage manage
+import threading                    # agregado para threading
+import socket                       # agregado para el manejo de la ip y la subnetmask para optener el rango de la red 
+import psutil                       # agregado para obener la subnet mask necesario instalar con pip install psutil
+import tkinter as tk                # agregado para gui
+from tkinter import  ttk            # agregado para la lista de interfaz
+import concurrent.futures           # agregado para thread pooling
+from tkinter import filedialog      # agregado para guardado de texto
 class NetScanner:
 # funcion para la GUI
     def __init__(self, root,authenticated_username):
@@ -21,31 +22,37 @@ class NetScanner:
         self.title_label.place(x=0, y=23)
 
         self.detect_ip_label = tk.Label(root, text="",font=('Times', 10), fg="#0D7FD8", bg='white')
-        self.detect_ip_label.place(x=20, y=1)
+        self.detect_ip_label.place(x=10, y=1)
 
         self.ip_entry = tk.Entry(root)
-        self.ip_entry.place(x=130, y=70)
+        self.ip_entry.place(x=130, y=75,height=20)
 
         self.scan_button = tk.Button(root, text="Scan Network", font=('Times', 11, 'bold'), bg='#fff', bd=2, fg="#0D7FD8", command=self.scan_button_clicked)
         self.scan_button.place(x=10, y=71)
 
+        self.interfaces = ["Ethernet", "Wi-Fi"]
+        self.selected_interface = tk.StringVar()
+        self.selected_interface.set("Interface")  
+        self.interface_dropdown = ttk.Combobox(root, textvariable=self.selected_interface, values=self.interfaces, state="readonly",width=8)
+        self.interface_dropdown.place(x=5, y=150)
+
         self.pause_button = tk.Button(root, text="Detectar",font=('Times', 11, 'bold'), bg='#fff', bd=2, fg="#0D7FD8", command=self.detect_button_clicked)
         self.pause_button.place(x=5, y=110)  
 
-        self.pause_button = tk.Button(root, text="Pausa", font=('Times', 11, 'bold'), bg='#0D7FD8', bd=2, fg="#fff", command=self.pause_button_clicked)
+        self.pause_button = tk.Button(root, text="Detener", font=('Times', 11, 'bold'), bg='#0D7FD8', bd=2, fg="#fff", command=self.pause_button_clicked)
         self.pause_button.place(x=80, y=110)  
 
         self.reset_button = tk.Button(root, text="Reset", font=('Times', 11, 'bold'), bg='#0D7FD8', bd=2, fg="#fff", command=self.reset_button_clicked)
-        self.reset_button.place(x=140, y=110) 
+        self.reset_button.place(x=153, y=110) 
 
         self.sort_button = tk.Button(root, text="Ordenar", font=('Times', 11, 'bold'), bg='#0D7FD8', bd=2, fg="#fff", command=self.sort_button_clicked)
-        self.sort_button.place(x=200, y=110)  
+        self.sort_button.place(x=210, y=110)  
 
         self.save_button = tk.Button(root, text="Guardar", font=('Times', 11, 'bold'), bg='#fff', bd=2, fg="#0D7FD8", command=self.save_button_clicked)
         self.save_button.place(x=280, y=71)
 
         self.load_button = tk.Button(root, text="Cargar", font=('Times', 11, 'bold'), bg='#0D7FD8', bd=2, fg="#fff", command=self.read_button_clicked)
-        self.load_button.place(x=280, y=110) 
+        self.load_button.place(x=285, y=110) 
 
         self.back_button = tk.Button(root, text="Atras", font=('Times', 11, 'bold'), bg='#D8300D', bd=2, fg="#fff", command=self.back_button_clicked)
         self.back_button.place(x=290, y=145)
@@ -55,7 +62,8 @@ class NetScanner:
 
         self.hosts_text = tk.Text(root, height=20, width=41)
         self.hosts_text.place(x=4, y=180)
-        self.paused = False
+        self.scan_thread = None
+        self.scan_stopped = False
         
         scrollbar = tk.Scrollbar(root, command=self.hosts_text.yview)
         scrollbar.place(x=330, y=180, height=320) 
@@ -86,7 +94,7 @@ class NetScanner:
                 for line in lines:
                     file.write(line + '\n')
 
-            self.result_label.config(text="    Guardado")
+            self.result_label.config(text="\tGuardado")
         else:
             self.result_label.config(text="Operación cancelada.")
 
@@ -120,7 +128,8 @@ class NetScanner:
 
 
 # funcion generar el rango de ip cidr
-    def generate_cidr(self,interface_name="Ethernet"):
+    def generate_cidr(self):
+        interface_name = self.selected_interface.get()
         try:
             interfaces = psutil.net_if_addrs()
             if interface_name in interfaces:
@@ -134,7 +143,7 @@ class NetScanner:
                 
                 try:
                     network = ipaddress.IPv4Network(f"{ip}/{subnet_mask}", strict=False)
-                    self.detect_ip_label.config(text=f"Ip: {ip}\t\t        Subnet Mask: {subnet_mask}")
+                    self.detect_ip_label.config(text=f"Ip: {ip}\t\t        Máscara Subred: {subnet_mask}")
                     return str(network)
                 except ValueError as e:
                         self.result_label.config(text=f"Error:{e}")
@@ -149,21 +158,21 @@ class NetScanner:
             
 # funcion para el boton de generar rango
     def detect_button_clicked(self):
-        cidr_format = self.generate_cidr(interface_name="Ethernet")
+        cidr_format = self.generate_cidr()
         if cidr_format:
              self.ip_entry.delete(0, tk.END) 
              self.ip_entry.insert(0, cidr_format)
              self.result_label.config(text="")
         else:
-            self.result_label.config(text="Fallo al generar")
+            self.result_label.config(text="\tFallo al generar")
 
 
 # funcion para el boton de escaneado
     def scan_button_clicked(self):
-        self.paused = False 
+        self.scan_stopped = False
         ip_subnet = self.ip_entry.get()
-        thread = threading.Thread(target=self.perform_scan, args=(ip_subnet,))
-        thread.start()
+        self.scan_thread = threading.Thread(target=self.perform_scan, args=(ip_subnet,))
+        self.scan_thread.start()
 
 # funcion para el boton de reset
     def reset_button_clicked(self):
@@ -183,7 +192,10 @@ class NetScanner:
     
 # funcion para el boton de pausa
     def pause_button_clicked(self):
-        self.paused = True
+        self.scan_stopped = not self.scan_stopped
+        if self.scan_stopped:
+            self.result_label.config(text="      Escaneo pausado")
+
     
 # funcion que realiza el escan
     def perform_scan(self, ip_subnet):
@@ -202,18 +214,22 @@ class NetScanner:
                 futures = {executor.submit(self.scan_host, str(ip)): ip for ip in network.hosts()}
 
                 for future in concurrent.futures.as_completed(futures):
-                    if self.paused:
-                        self.result_label.config(text="Escaneo pausado")
-                        break  
+                    if self.scan_stopped:
+                        for task in futures:
+                            task.cancel()
+                        self.result_label.config(text="      Escaneo detenido")
+                        return
                     ip = futures[future]
                     scanned_hosts += 1
                     progress = int((scanned_hosts / total_hosts) * 100)
                     self.result_label.config(text=f"Escaneo en progreso...... {progress}%")
-        if not self.paused:
-            self.result_label.config(text="Escaneo completo!")
+        if not self.scan_stopped:
+            self.result_label.config(text="       Escaneo completo!")
 
 # funcuion que imprime los ips escaneados que responden
     def scan_host(self, ip):
+        if self.scan_stopped:
+            return
         if ping_ip(ip):
             self.display_result(ip + " Responde")
         

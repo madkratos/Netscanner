@@ -1,0 +1,14 @@
+# Byte-compiled 
+__pycache__
+
+# Archivo de configuracion para la encriptacion
+config.ini
+
+# Script para generar la clave de encriptacion
+key.py
+
+# readme
+README.md
+
+# base de datos para usuarios
+user.db

@@ -51,6 +51,9 @@ class Login:
         cerrar = tk.Button(frame_form_fill,text="Cerrar",font=('Times', 15,BOLD),bg='#0D7FD8', bd=2,fg="#fff",command=self.exit_program)
         cerrar.pack(fill=tk.X, padx=20,pady=5)
 
+        self.root.bind("<Return>", lambda event: self.authenticate_user())
+        self.root.bind("<Escape>", lambda event: self.exit_program())
+
 
 # funcion para validar usuario en la base de datos
     def authenticate_user(self):
@@ -62,9 +65,11 @@ class Login:
                 self.authenticated_username = username
                 self.open_dashboard() 
             else:
-                return tkinter.messagebox.showerror(title="error",message="El usuario o contraseña es incorrecto.")
+                    self.username_entry.delete(0, 'end')
+                    self.password_entry.delete(0, 'end')
+                    return tkinter.messagebox.showerror(title="error",message="El usuario o contraseña es incorrecto.")
         else:
-            return tkinter.messagebox.showerror(title="error", message="No has ingresado nada en los campos.")
+            return tkinter.messagebox.showerror(title="error", message="Complete todo los campos.")
 
 
     
