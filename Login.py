@@ -4,6 +4,8 @@ import sys                                    # agregado llamada al sistema
 from DatabaseManager import DatabaseManager   # agregado modificar valores de la base de datos
 from tkinter.font import BOLD
 import tkinter.messagebox                     # agregado para mensajes de confirmación 
+from CTkMessagebox import CTkMessagebox       # agregado para el manejo de errores y caonfirmacion de acciones"pip install CTkMessagebox"
+
 customtkinter.set_appearance_mode("Dark") 
 customtkinter.set_default_color_theme("blue")
 class Login:
@@ -13,6 +15,7 @@ class Login:
         self.root = root
         root.geometry('350x500+800+200')
         root.title('NetScanner')
+        self.root.resizable(width=0, height=0)
 
         self.frame = customtkinter.CTkFrame(master=root,width=320,height=500,corner_radius=10)
         self.frame.place(relx=0.5, rely=0.3, anchor=tkinter.CENTER)
@@ -38,6 +41,8 @@ class Login:
         self.cerrar = customtkinter.CTkButton(master =root, text="Cerrar",fg_color="#3D59AB", command=self.exit_program)
         self.cerrar.place(x=175, y=450, anchor=customtkinter.CENTER)
 
+        self.root.bind("<Return>", lambda event: self.authenticate_user())
+
 # funcion para validar usuario en la base de datos
     def authenticate_user(self):
         username = self.username_entry.get()
@@ -51,9 +56,11 @@ class Login:
                 else:
                      self.open_dashboard_user()
             else:
-                return tkinter.messagebox.showerror(title="error",message="El usuario o contraseña es incorrecto.")
+                self.username_entry.delete(0, 'end')
+                self.password_entry.delete(0, 'end')
+                CTkMessagebox(title="Error", message="El usuario o contraseña es incorrecto.",icon="cancel", option_1="Aceptar")
         else:
-            return tkinter.messagebox.showerror(title="error", message="No has ingresado nada en los campos.")
+            CTkMessagebox(title="Error", message="No has ingresado nada en los campos.",icon="cancel", option_1="Aceptar")
 
     
 # funcion para el boton de cerrar
