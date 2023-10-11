@@ -82,11 +82,16 @@ class Register:
                 CTkMessagebox(title="Error", message="El usuario ingresado ya existe.",icon="cancel", option_1="Aceptar")
             elif password == passwordv:
                 if username:
+                        option= CTkMessagebox(title='Confirme la operacion', message='Esta seguro de querer agragar este usuario?',icon="question",option_2="Si", option_1="No") 
+                        option = option.get()
+                if option == "Si":
                     self.db_manager.insert_user(username, password)
                     self.user_entry.delete(0, 'end')
                     self.passv_entry.delete(0, 'end')
                     self.pass_entry.delete(0, 'end')
                     CTkMessagebox(title="Aprobado", message="Usuario registrado con exito.",icon="check", option_1="Aceptar")
+                else:
+                    CTkMessagebox(title="Operacion cancelada", message="Operacion cancelada.",icon="cancel", option_1="Aceptar")
             else:
                 self.user_entry.delete(0, 'end')
                 self.passv_entry.delete(0, 'end')
