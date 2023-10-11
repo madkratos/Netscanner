@@ -82,7 +82,7 @@ class Register:
                 CTkMessagebox(title="Error", message="El usuario ingresado ya existe.",icon="cancel", option_1="Aceptar")
             elif password == passwordv:
                 if username:
-                        option= CTkMessagebox(title='Confirme la operacion', message='Esta seguro de querer agragar este usuario?',icon="question",option_2="Si", option_1="No") 
+                        option= CTkMessagebox(title='Confirme la operacion', message='¿Esta seguro de querer agregar este usuario?',icon="question",option_2="Si", option_1="No") 
                         option = option.get()
                 if option == "Si":
                     self.db_manager.insert_user(username, password)
