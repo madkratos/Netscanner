@@ -13,39 +13,38 @@ class Register:
         self.root = root
         self.authenticated_username=authenticated_username
         self.root.title('Registrar Usuario.')
-        self.root.geometry('380x620+800+200')
+        self.root.geometry('380x530+800+200')
         self.root.resizable(width=0, height=0)
         
-        self.frame = customtkinter.CTkFrame(master=root,width=360,height=620,corner_radius=10)
+        self.frame = customtkinter.CTkFrame(master=root,width=320,height=530,corner_radius=10)
         self.frame.place(relx=0.5, rely=0.3, anchor=tkinter.CENTER)
         self.title = customtkinter.CTkLabel(master=self.frame,text="Registrar Usuario",font=customtkinter.CTkFont(size=35))
         self.title.place(relx=0.5, rely=0.3, anchor=tkinter.CENTER)
 
-
-        self.user_label = customtkinter.CTkLabel(master=self.frame,text="Usuario:",font=customtkinter.CTkFont(size=15))
-        self.user_label.place(relx=0.2, rely=0.4, anchor=tkinter.CENTER)
-
+        self.label_user = customtkinter.CTkLabel(master=self.frame,text="Usuario:",font=customtkinter.CTkFont(size=15))
+        self.label_user.place(relx=0.16, rely=0.4, anchor=tkinter.CENTER)
+        
         self.user_entry = customtkinter.CTkEntry(master=self.frame,width=200,height=30,corner_radius=10)
-        self.user_entry.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)
-
-        self.password_label = customtkinter.CTkLabel(master=self.frame,text="Contraseña:",font=customtkinter.CTkFont(size=15))
-        self.password_label.place(relx=0.2, rely=0.6,anchor=tkinter.CENTER)
+        self.user_entry.place(relx=0.5, rely=0.47, anchor=tkinter.CENTER)
+    
+        self.label_pass = customtkinter.CTkLabel(master=self.frame,text="Contraseña:",font=customtkinter.CTkFont(size=15))
+        self.label_pass.place(relx=0.2, rely=0.57,anchor=tkinter.CENTER)
 
         self.pass_entry = customtkinter.CTkEntry(master=self.frame,width=200,height=30,corner_radius=10,show="*")
-        self.pass_entry.place(relx=0.5, rely=0.7, anchor=tkinter.CENTER)
+        self.pass_entry.place(relx=0.5, rely=0.64, anchor=tkinter.CENTER)
 
-        self.password_label = customtkinter.CTkLabel(master=self.frame,text="Confirmar contraseña:",font=customtkinter.CTkFont(size=15))
-        self.password_label.place(relx=0.3, rely=0.8,anchor=tkinter.CENTER)
+        self.label_pass = customtkinter.CTkLabel(master=self.frame,text="Confirmar contraseña:",font=customtkinter.CTkFont(size=15))
+        self.label_pass.place(relx=0.32, rely=0.74,anchor=tkinter.CENTER)
 
         self.passv_entry = customtkinter.CTkEntry(master=self.frame,width=200,height=30,corner_radius=10,show="*")
-        self.passv_entry.place(relx=0.5, rely=0.9, anchor=tkinter.CENTER)
+        self.passv_entry.place(relx=0.5, rely=0.81, anchor=tkinter.CENTER)
+
+        self.login = customtkinter.CTkButton(master =self.frame, text="Registrar Usuario", command=self.register_user)
+        self.login.place(x=160, y=490, anchor=customtkinter.CENTER)
 
 
-        self.register = customtkinter.CTkButton(master =self.frame, text="Registrase", command=self.register_user)
-        self.register.place(x=190, y=600, anchor=customtkinter.CENTER)
-
-        self.cerrar = customtkinter.CTkButton(master =root, text="volver",fg_color="#3D59AB", command=self.back_button_clicked)
-        self.cerrar.place(x=200, y=540, anchor=customtkinter.CENTER)
+        self.cerrar = customtkinter.CTkButton(master =root, text="Volver",fg_color="#3D59AB", command=self.back_button_clicked)
+        self.cerrar.place(x=191, y=460, anchor=customtkinter.CENTER)
 
         self.root.bind("<Return>", lambda event: self.register_user())
         self.root.bind("<Escape>", lambda event: self.back_button_clicked())
