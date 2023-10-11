@@ -16,6 +16,8 @@ class NetScanner:
         self.authenticated_username=authenticated_username
         self.root.geometry('350x500+800+200')
         root.title('NetScanner')
+        self.root.resizable(width=0, height=0)
+
 
         self.title_label =customtkinter.CTkLabel(master=root, text="Ingrese un rango de red en formato CIDR\n(ej: 192.168.0.0/24)\n", font=customtkinter.CTkFont(size=15))
         self.title_label.place(x=40, y=26)

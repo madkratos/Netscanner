@@ -14,6 +14,8 @@ class Tasks:
         self.authenticated_username=authenticated_username
         self.root.geometry('350x500+800+200')
         root.title('NetScanner')
+        self.root.resizable(width=0, height=0)
+
 
         self.frame = customtkinter.CTkFrame(master=root,width=330,height=70,corner_radius=10)
         self.frame.place(x=10, y=10)
