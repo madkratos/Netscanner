@@ -1,9 +1,9 @@
 ```
-                                        _   _      _   ____                                  
-                                       | \ | | ___| |_/ ___|  ___ __ _ _ __  _ __   ___ _ __ 
-                                       |  \| |/ _ \ __\___ \ / __/ _` | '_ \| '_ \ / _ \ '__|
-                                       | |\  |  __/ |_ ___) | (_| (_| | | | | | | |  __/ |   
-                                       |_| \_|\___|\__|____/ \___\__,_|_| |_|_| |_|\___|_|   
+         _   _      _   ____                                  
+        | \ | | ___| |_/ ___|  ___ __ _ _ __  _ __   ___ _ __ 
+        |  \| |/ _ \ __\___ \ / __/ _` | '_ \| '_ \ / _ \ '__|
+        | |\  |  __/ |_ ___) | (_| (_| | | | | | | |  __/ |   
+        |_| \_|\___|\__|____/ \___\__,_|_| |_|_| |_|\___|_|   
  ```
 ## Descripción
 NetScanner es un programa de escaneo de red que utiliza paquetes de ping ICMP para el descubrimiento de redes. Puede manejar rangos de direcciones IP en formato CIDR (Classless Inter-Domain Routing) o (enrutamiento entre dominios sin clase) y está diseñado para cubrir todos los rangos de direcciones posibles.
