@@ -13,7 +13,7 @@ class Register:
         self.root = root
         self.authenticated_username=authenticated_username
         self.root.title('Registrar Usuario.')
-        self.root.geometry('380x530+800+200')
+        self.root.geometry('350x500+800+200')
         self.root.resizable(width=0, height=0)
         
         self.frame = customtkinter.CTkFrame(master=root,width=320,height=530,corner_radius=10)
@@ -44,7 +44,7 @@ class Register:
 
 
         self.cerrar = customtkinter.CTkButton(master =root, text="Volver",fg_color="#3D59AB", command=self.back_button_clicked)
-        self.cerrar.place(x=191, y=460, anchor=customtkinter.CENTER)
+        self.cerrar.place(x=175, y=460, anchor=customtkinter.CENTER)
 
         self.root.bind("<Return>", lambda event: self.register_user())
         self.root.bind("<Escape>", lambda event: self.back_button_clicked())
