@@ -155,13 +155,16 @@ class Tasks:
             option= CTkMessagebox(title='Confirme la operacion', message='Esta seguro de querer crear esta tarea?',icon="question",option_2="Si", option_1="No") 
             option = option.get()
             if option =="Si":
-                self.db_manager.insert_task(title, state, description)
-                self.refresh()
-                CTkMessagebox(message=f"La tarea {title} se creo con exito",icon="check", option_1="Aceptar")
-                self.task_name_entry.delete(0, tk.END)
-                self.text.delete("1.0", tk.END)
-                self.task_name_entry.focus()
-                
+                tasks = self.db_manager.get_task()
+                if title in [task["title"] for task in tasks]:
+                    CTkMessagebox(message="Ya existe una tarea con ese nombre", icon="warning", option_1="Aceptar")
+                else:
+                    self.db_manager.insert_task(title, state, description)
+                    self.refresh()
+                    CTkMessagebox(message=f"La tarea {title} se creo con exito", icon="check", option_1="Aceptar")
+                    self.task_name_entry.delete(0, tk.END)
+                    self.text.delete("1.0", tk.END)
+                    self.task_name_entry.focus()
             else:
                 CTkMessagebox(title="Operacion cancelada", message="Tarea no fue creada.")
                 self.task_name_entry.delete(0, tk.END)
