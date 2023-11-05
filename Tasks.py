@@ -123,7 +123,7 @@ class Tasks:
             CTkMessagebox(title="Detalle", message=description)
 
 
-# funcion para actualizar las tareas
+# funcion para actualizar las tareas..
     def refresh(self):
         '''funcion para actualizar las tareas'''
         self.text.delete("1.0", tk.END)
