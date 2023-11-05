@@ -6,16 +6,31 @@ from tkinter.font import BOLD
 import tkinter.messagebox                     # agregado para mensajes de confirmación 
 from CTkMessagebox import CTkMessagebox       # agregado para el manejo de errores y caonfirmacion de acciones"pip install CTkMessagebox"
 
-customtkinter.set_appearance_mode("Dark") 
-customtkinter.set_default_color_theme("blue")
+customtkinter.set_appearance_mode("Dark")           #aplica el color del tema a la ventana
+customtkinter.set_default_color_theme("blue")       #aplica el color del tema a la ventana
+
+#Funcion para el centrado universal de la ventan
+def center_window(root, width, height):
+    '''Funcion para el centrado universal de la ventan'''
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+    x = (screen_width - width) // 2
+    y = (screen_height - height) // 2
+    root.geometry(f'{width}x{height}+{x}+{y}')
+    root.resizable(width=0, height=0)
+
+
 class Login:
-# funcion de la GUI
+#funcion de la GUI 
     def __init__(self, root):
+        ''' funcion de la GUI '''
         self.db_manager = DatabaseManager()
         self.root = root
-        root.geometry('350x500+800+200')
         root.title('NetScanner')
-        self.root.resizable(width=0, height=0)
+        width, height = 350, 500
+        self.root.geometry(f'{width}x{height}')
+        center_window(self.root, width, height)
+
 
         self.frame = customtkinter.CTkFrame(master=root,width=320,height=500,corner_radius=10)
         self.frame.place(relx=0.5, rely=0.3, anchor=tkinter.CENTER)
@@ -45,6 +60,7 @@ class Login:
 
 # funcion para validar usuario en la base de datos
     def authenticate_user(self):
+        ''' funcion para validar usuario en la base de datos'''
         username = self.username_entry.get()
         password = self.password_entry.get()
 
@@ -65,6 +81,7 @@ class Login:
     
 # funcion para el boton de cerrar
     def exit_program(self):
+        '''funcion para el boton de cerrar'''
         self.root.destroy()
         if hasattr(self, 'dash_window'):
             self.dash_window.destroy()
@@ -73,6 +90,7 @@ class Login:
 
 # funcion para crear la ventana del llamado dashboard de usuario
     def open_dashboard_user(self):
+        '''funcion para crear la ventana del llamado dashboard de usuario'''
         import customtkinter  
         from DashboardUser import DashboardUser  
         self.dash_window = customtkinter.CTkToplevel(self.root)  
@@ -84,6 +102,7 @@ class Login:
 
 # funcion para crear la ventana del llamado dashboard
     def open_dashboard(self):
+        '''funcion para crear la ventana del llamado dashboard'''
         import customtkinter  
         from Dashboard import Dashboard  
         self.dash_window = customtkinter.CTkToplevel(self.root)  
@@ -104,6 +123,7 @@ class Login:
         
 # funcion para la ventana principal de login
 def main():
+    ''' funcion para la ventana principal de login'''
     root = customtkinter.CTk()
     login = Login(root)
     root.mainloop()

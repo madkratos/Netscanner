@@ -5,16 +5,28 @@ import sqlite3
 from DatabaseManager import DatabaseManager   # agregado modificar valores de la base de datos
 from CTkMessagebox import CTkMessagebox       # agregado para el manejo de errores y caonfirmacion de acciones"pip install CTkMessagebox"
 
+#Funcion para el centrado universal de la ventan
+def center_window(root, width, height):
+    '''Funcion para el centrado universal de la ventan'''
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+    x = (screen_width - width) // 2
+    y = (screen_height - height) // 2
+    root.geometry(f'{width}x{height}+{x}+{y}')
+    root.resizable(width=0, height=0)
+
 class Register:
 # Función para para contruir la ventana con diseños desde la ventana login
     def __init__(self, root,authenticated_username):
+        '''Función para para contruir la ventana con diseños desde la ventana login'''
         self.db_manager = DatabaseManager()
         self.db_manager.create_user_tables()
         self.root = root
         self.authenticated_username=authenticated_username
-        self.root.title('Registrar Usuario.')
-        self.root.geometry('350x500+800+200')
-        self.root.resizable(width=0, height=0)
+        self.root.title('Registrar Usuario')
+        width, height = 350, 500
+        self.root.geometry(f'{width}x{height}')
+        center_window(self.root, width, height)
         
         self.frame = customtkinter.CTkFrame(master=root,width=320,height=530,corner_radius=10)
         self.frame.place(relx=0.5, rely=0.3, anchor=tkinter.CENTER)
@@ -51,10 +63,12 @@ class Register:
 
 #Funcion para eliminar la ventana registrarse al presionar el boton volver
     def restore_dashboard(self):
+        '''Funcion para eliminar la ventana registrarse al presionar el boton volver'''
         self.login_window.destroy()
     
 #Funcion para volver a inicio de sesion al presionar el botos volver 
     def back_button_clicked(self):
+        '''Funcion para volver a inicio de sesion al presionar el botos volver '''
         from Rols import Rols  
         self.login_window = customtkinter.CTkToplevel(self.root)
         self.root.withdraw()
@@ -66,6 +80,7 @@ class Register:
         
 # funcion para el boton de crear usuario
     def register_user(self):
+        '''funcion para el boton de crear usuario'''
         username = self.user_entry.get()
         password = self.pass_entry.get()
         passwordv = self.passv_entry.get()
@@ -100,8 +115,9 @@ class Register:
         else: 
             CTkMessagebox(title="Error", message="No has ingresado nada en los campos.",icon="cancel", option_1="Aceptar")
 
-
+# funcion principal
 def main():
+    '''funcion principal'''
     root = customtkinter.CTk()
     register = Register(root)
     root.mainloop()

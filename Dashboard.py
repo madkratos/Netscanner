@@ -2,14 +2,27 @@ import tkinter as tk  # agregado para gui
 import customtkinter  # nuevo agregado para la nueva gui instalado con "pip3 install customtkinter"
 import threading      # nuevo agregado para manejar los threts para la impresion
 import time           # nuevo agregado para medir el tiempo de impresion
+
+#Funcion para el centrado universal de la ventan
+def center_window(root, width, height):
+    '''Funcion para el centrado universal de la ventan'''
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+    x = (screen_width - width) // 2
+    y = (screen_height - height) // 2
+    root.geometry(f'{width}x{height}+{x}+{y}')
+    root.resizable(width=0, height=0)
+
 class Dashboard:
+    #funcion para la GUI
     def __init__(self, root,authenticated_username):
+        '''funcion para la GUI'''
         self.root = root
         self.authenticated_username = authenticated_username
         self.root.title('Dashboard')
-        self.root.geometry('350x500+800+200')
-        self.root.resizable(width=0, height=0)
-
+        width, height = 350, 500
+        self.root.geometry(f'{width}x{height}')
+        center_window(self.root, width, height)
 
         self.frame = customtkinter.CTkFrame(master=root,width=330,height=70,corner_radius=10)
         self.frame.place(x=10, y=10)
@@ -50,8 +63,9 @@ class Dashboard:
         self.message_thread.start()
         
 
-# funcion para el boton de escaneo abre al funcion de escaneo principal
+# funcion para el boton de escaneo abre el formulario de escaneo principal
     def scan_button_clicked(self):
+        '''funcion para el boton de escaneo abre el formulario de escaneo principal'''
         import customtkinter  
         from NetScanner import NetScanner  
         self.scanner_window = customtkinter.CTkToplevel(self.root)
@@ -63,12 +77,14 @@ class Dashboard:
 
 # funcion para restaurar la ventana 
     def restore_dashboard(self):
+        '''funcion para restaurar la ventana '''
         self.scanner_window.destroy()
         self.login_window.destroy()
 
 
 # funcion para el boton de logout
     def logout_button_clicked(self):
+        '''funcion para el boton de logout'''
         import customtkinter  
         from Login import Login  
         self.login_window = customtkinter.CTkToplevel(self.root)
@@ -77,8 +93,9 @@ class Dashboard:
         login = Login(self.login_window)
 
 
-# funcion la eimpresion del mensaje sobre el programa
+# funcion la impresion del mensaje sobre el programa
     def print_message(self, text):
+        '''funcion la impresion del mensaje sobre el programa'''
         for char in text:
             self.net_text.insert(tk.END, char)
             self.net_text.see(tk.END)  
@@ -86,6 +103,7 @@ class Dashboard:
 
 # funcion para el mensaje sobre el programa
     def message(self, lines):
+        '''funcion para el mensaje sobre el programa'''
         self.net_text.config(state=tk.NORMAL)
         self.net_text.delete("1.0", tk.END)  
         for line in lines:
@@ -94,6 +112,7 @@ class Dashboard:
 
 # funcion para el boton de rol de usuarios
     def usuario_button_clicked(self):
+        '''funcion para el boton de rol de usuarios'''
         import customtkinter  
         from Rols import Rols  
         self.rol_window = customtkinter.CTkToplevel(self.root)
@@ -103,8 +122,9 @@ class Dashboard:
         customtkinter.set_default_color_theme("blue")
         rol = Rols(self.rol_window,self.authenticated_username)
 
-# funcion para el boton de notas
+# funcion para el boton de tareas
     def task_button_clicked(self):
+        '''funcion para el boton de tareas'''
         import customtkinter  
         from Tasks import Tasks  
         self.task_window = customtkinter.CTkToplevel(self.root)
@@ -116,6 +136,7 @@ class Dashboard:
 
 # funcion para la ventana principal de dashboard
 def main():
+    '''funcion para la ventana principal de dashboard'''
     root = customtkinter.CTk()
     dash= Dashboard(root)
     root.mainloop()

@@ -4,16 +4,28 @@ from DatabaseManager import DatabaseManager   # agregado modificar valores de la
 import tkinter.messagebox                     # agregado para el manejo de errores y caonfirmacion de acciones
 from CTkMessagebox import CTkMessagebox       # agregado para el manejo de errores y caonfirmacion de acciones"pip install CTkMessagebox"
 
+#Funcion para el centrado universal de la ventan
+def center_window(root, width, height):
+    '''Funcion para el centrado universal de la ventan'''
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+    x = (screen_width - width) // 2
+    y = (screen_height - height) // 2
+    root.geometry(f'{width}x{height}+{x}+{y}')
+    root.resizable(width=0, height=0)
+
 class Rols:
 # funcion para la GUI
     def __init__(self, root,authenticated_username):
+        '''funcion para la GUI'''
         self.db_manager = DatabaseManager()
         self.db_manager.create_user_tables()
         self.root = root
         self.authenticated_username=authenticated_username
-        self.root.geometry('350x500+800+200')
-        root.title('NetScanner')
-        self.root.resizable(width=0, height=0)
+        root.title('Roles')
+        width, height = 350, 500
+        self.root.geometry(f'{width}x{height}')
+        center_window(self.root, width, height)
 
 
         self.title_label =customtkinter.CTkLabel(master=root, text="Gestor de rol de usuarios", font=customtkinter.CTkFont(size=30))
@@ -48,6 +60,7 @@ class Rols:
 
 #funcion para crear ventana de registro de usuario
     def open_register(self):
+        '''funcion para crear ventana de registro de usuario'''
         from Register import Register
         self.register_window = customtkinter.CTkToplevel(self.root)
         self.root.withdraw()
@@ -58,6 +71,7 @@ class Rols:
 
 # funcion para mostrar los usuarios
     def display_usernames(self):
+        '''funcion para mostrar los usuarios'''
         usernames = self.db_manager.get_usernames()
         if usernames:
             self.text.insert(tk.END, f"Users:\n")
@@ -67,6 +81,7 @@ class Rols:
 
 # funcion para actualizar los usuarios
     def refresh_button_clicked(self):
+        '''funcion para actualizar los usuarios'''
         self.result_label.configure(text="")
         self.text.delete("1.0", tk.END)
         self.display_usernames()
@@ -74,10 +89,12 @@ class Rols:
 
 # funcion para restaurar la ventana 
     def restore_dashboard(self):
+        '''funcion para restaurar la ventana '''
         self.dash_window.destroy()
 
 # funcion para el boton de atras
     def back_button_clicked(self):
+        '''funcion para el boton de atras'''
         if self.authenticated_username == "admin":
             self.open_dashboard()
         else:
@@ -86,6 +103,7 @@ class Rols:
 
 # funcion para crear la ventana del llamado dashboard de usuario
     def open_dashboard_user(self):
+        '''funcion para crear la ventana del llamado dashboard de usuario'''
         import customtkinter  
         from DashboardUser import DashboardUser  
         self.dash_window = customtkinter.CTkToplevel(self.root)  
@@ -97,6 +115,7 @@ class Rols:
 
 # funcion para crear la ventana del llamado dashboard
     def open_dashboard(self):
+        '''funcion para crear la ventana del llamado dashboard'''
         import customtkinter  
         from Dashboard import Dashboard  
         self.dash_window = customtkinter.CTkToplevel(self.root)  
@@ -109,6 +128,7 @@ class Rols:
 
 # funcion para el boton de crear usuario
     def register_user(self):
+        '''funcion para el boton de crear usuario'''
         username = self.user_entry.get()
         password = self.pass_entry.get()
         if username and password:
@@ -120,6 +140,7 @@ class Rols:
 
 # funcion para el boton de borrar usuario
     def delete_user(self):
+        '''funcion para el boton de borrar usuario'''
         username_to_delete = self.user_entry.get()
 
         if username_to_delete:
@@ -148,6 +169,7 @@ class Rols:
 
 #funcion que da inicio al loop de la GUI 
 def main():
+    '''funcion que da inicio al loop de la GUI '''
     root = customtkinter.CTk()
     rol= Rols(root)
     root.mainloop()

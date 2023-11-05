@@ -9,14 +9,27 @@ import tkinter as tk            # agregado para gui
 import concurrent.futures       # agregado para thread pooling
 from tkinter import filedialog  # agregado para guardado de texto
 import customtkinter as  ct     # agregado para la lista de interface
+
+#Funcion para el centrado universal de la ventan
+def center_window(root, width, height):
+    '''Funcion para el centrado universal de la ventan'''
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+    x = (screen_width - width) // 2
+    y = (screen_height - height) // 2
+    root.geometry(f'{width}x{height}+{x}+{y}')
+    root.resizable(width=0, height=0)
+
 class NetScanner:
 # funcion para la GUI
     def __init__(self, root,authenticated_username):
+        '''funcion para la GUI'''
         self.root = root
         self.authenticated_username=authenticated_username
-        self.root.geometry('350x500+800+200')
         root.title('NetScanner')
-        self.root.resizable(width=0, height=0)
+        width, height = 350, 500
+        self.root.geometry(f'{width}x{height}')
+        center_window(self.root, width, height)
 
 
         self.title_label =customtkinter.CTkLabel(master=root, text="Ingrese un rango de red en formato CIDR\n(ej: 192.168.0.0/24)\n", font=customtkinter.CTkFont(size=15))
@@ -78,10 +91,12 @@ class NetScanner:
 
 # funcion para restaurar la ventana 
     def restore_dashboard(self):
+        '''funcion para restaurar la ventana '''
         self.dash_window.destroy()
 
 # funcion para el boton de guardado
     def save_button_clicked(self):
+        '''funcion para el boton de guardado'''
         lines = self.hosts_text.get("1.0", tk.END).splitlines()
 
         if not lines:
@@ -107,6 +122,7 @@ class NetScanner:
 
 # funcion para el boton de carga
     def read_button_clicked(self):
+        '''funcion para el boton de carga'''
         root = tk.Tk()
         root.withdraw()
         file_path = filedialog.askopenfilename(
@@ -126,6 +142,7 @@ class NetScanner:
 
 # funcion para el boton de atras
     def back_button_clicked(self):
+        '''funcion para el boton de atras'''
         if self.authenticated_username == "admin":
             self.open_dashboard()
         else:
@@ -134,6 +151,7 @@ class NetScanner:
 
 # funcion para crear la ventana del llamado dashboard de usuario
     def open_dashboard_user(self):
+        '''funcion para crear la ventana del llamado dashboard de usuario'''
         import customtkinter  
         from DashboardUser import DashboardUser  
         self.dash_window = customtkinter.CTkToplevel(self.root)  
@@ -145,6 +163,7 @@ class NetScanner:
 
 # funcion para crear la ventana del llamado dashboard
     def open_dashboard(self):
+        '''funcion para crear la ventana del llamado dashboard'''
         import customtkinter  
         from Dashboard import Dashboard  
         self.dash_window = customtkinter.CTkToplevel(self.root)  
@@ -157,6 +176,7 @@ class NetScanner:
 
 # funcion generar el rango de ip cidr
     def generate_cidr(self):
+        '''funcion generar el rango de ip cidr'''
         interface_name = self.interface_dropdown.get()
         try:
             interfaces = psutil.net_if_addrs()
@@ -185,6 +205,7 @@ class NetScanner:
           
 # funcion para el boton de generar rango
     def detect_button_clicked(self):
+        '''funcion para el boton de generar rango'''
         cidr_format = self.generate_cidr()
         if cidr_format:
              self.ip_entry.delete(0, tk.END) 
@@ -196,6 +217,7 @@ class NetScanner:
 
 # funcion para el boton de escaneado
     def scan_button_clicked(self):
+        '''funcion para el boton de escaneado'''
         self.scan_stopped = False
         ip_subnet = self.ip_entry.get()
         self.scan_thread = threading.Thread(target=self.perform_scan, args=(ip_subnet,))
@@ -203,6 +225,7 @@ class NetScanner:
 
 # funcion para el boton de reset
     def reset_button_clicked(self):
+        '''funcion para el boton de reset'''
         self.ip_entry.delete(0, tk.END)
         self.progress_bar.configure(progress_color="#1874CD") 
         self.progress_bar.set(0)
@@ -212,6 +235,7 @@ class NetScanner:
 
 # funcion para el boton de ordenar
     def sort_button_clicked(self):
+        '''funcion para el boton de ordenar'''
         current_text = self.hosts_text.get("1.0", tk.END)
         lines = [line.strip() for line in current_text.splitlines() if line.strip()]
         sorted_lines = sorted(lines, key=lambda x: ipaddress.IPv4Address(x.split()[0]))
@@ -221,6 +245,7 @@ class NetScanner:
     
 # funcion para el boton de pausa
     def stop_button_clicked(self):
+        '''funcion para el boton de pausa'''
         self.scan_stopped = not self.scan_stopped
         if self.scan_stopped:
             self.progress_bar.configure(progress_color="red")
@@ -229,6 +254,7 @@ class NetScanner:
     
 # funcion que realiza el escan
     def perform_scan(self, ip_subnet):
+        '''funcion que realiza el escan'''
         self.progress_bar.set(0)
         self.progress_label.configure(text="0%")
         self.hosts_text.delete("1.0", tk.END)
@@ -261,15 +287,18 @@ class NetScanner:
 
 # funcuion que imprime los ips escaneados que responden
     def scan_host(self, ip):
+        '''funcuion que imprime los ips escaneados que responden'''
         if ping_ip(ip):
             self.display_result(ip + " Responde")   
 
 # funcuion que imprime la lista de ips escaneados
     def display_result(self, message):
+        '''funcuion que imprime la lista de ips escaneados'''
         self.hosts_text.insert(tk.END, message + "\n")
 
 # funcion para ping
 def ping_ip(ip):
+    '''funcion para ping'''
     try:
         output = subprocess.check_output(['ping', '-n', '1', ip], universal_newlines=True)
         if "bytes=32" in output:  
@@ -281,6 +310,7 @@ def ping_ip(ip):
 
 # funcion que da inicio al loop de la GUI 
 def main():
+    '''funcion que da inicio al loop de la GUI '''
     root =customtkinter.CTk()
     scanner = NetScanner(root)
     root.mainloop()
