@@ -25,11 +25,11 @@ class Tasks2:
         self.root = root
         self.authenticated_username=authenticated_username
         root.title('Gestor de tareas')
-        width, height = 350, 280
+        width, height = 350, 500
         self.root.geometry(f'{width}x{height}')
         center_window(self.root, width, height)
 
-        self.frame = customtkinter.CTkFrame(master=root,width=330,height=65,corner_radius=10)
+        self.frame = customtkinter.CTkFrame(master=root,width=350,height=500,corner_radius=10)
         self.frame.place(x=10, y=10)
 
         self.title_label =customtkinter.CTkLabel(master=self.frame, text="Gestor de Tareas", font=customtkinter.CTkFont(size=30),padx=50,pady=5)

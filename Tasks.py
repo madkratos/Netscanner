@@ -25,7 +25,7 @@ class Tasks:
         self.root = root
         self.authenticated_username=authenticated_username
         root.title('Gestor de tareas')
-        width, height = 350, 400
+        width, height = 350, 500
         self.root.geometry(f'{width}x{height}')
         center_window(self.root, width, height)
 
