@@ -25,10 +25,10 @@ class Tasks:
         self.root = root
         self.authenticated_username=authenticated_username
         root.title('Gestor de tareas')
-        width, height = 350, 500
+        width, height = 350, 400
         self.root.geometry(f'{width}x{height}')
         center_window(self.root, width, height)
-
+        
         self.frame = customtkinter.CTkFrame(master=root,width=330,height=65,corner_radius=10)
         self.frame.place(x=10, y=10)
 
@@ -53,7 +53,7 @@ class Tasks:
         self.add_button = customtkinter.CTkButton(master =root, text="Agregar",font=customtkinter.CTkFont(size=13),width=20,height=10,corner_radius=8, command=self.open_task)
         self.add_button.place(x=120, y=350, anchor=customtkinter.CENTER)
 
-        self.edit_button = customtkinter.CTkButton(master =root, text="Editar",font=customtkinter.CTkFont(size=13),width=20,height=10,corner_radius=8, command=self.open_task)
+        self.edit_button = customtkinter.CTkButton(master =root, text="Editar",font=customtkinter.CTkFont(size=13),width=20,height=10,corner_radius=8, command=self.edit_button_clicked)
         self.edit_button.place(x=175, y=350, anchor=customtkinter.CENTER)
 
         self.delete_button = customtkinter.CTkButton(master =root, text="Borrar",font=customtkinter.CTkFont(size=13),width=20,height=10,corner_radius=8, command=self.delete_task_wrapper)
@@ -100,19 +100,25 @@ class Tasks:
         '''funcion para actualizar las tareas'''
         self.display_task()
 
-# funcion para el boton de editar
-    def edit_task(self):
-        '''funcion para el boton de editar'''
-        selected_item = self.task_list_treeview.selection()
-        if selected_item:
-            self.selected_task = selected_item
-            title = self.task_list_treeview.item(selected_item, "values")[0]
-            description = self.task_list_treeview.item(selected_item, "values")[2]
+
     
 # funcion resetar los campos despues de guardar la edicion de una tarea
     def reset_task_fields(self):
             '''funcion resetar los campos despues de guardar la edicion de una tarea'''
             self.selected_task = None
+
+    def edit_button_clicked(self):
+        from Task2 import Tasks2  
+        selected_item = self.task_list_treeview.selection()
+        if not selected_item:
+            CTkMessagebox(title="Operacion no valida", message="No has selecionado ninguna tarea",icon="warning", option_1="Acptar")
+            return
+
+        task_title = self.task_list_treeview.item(selected_item)["values"][0]
+        task_state = self.task_list_treeview.item(selected_item)["values"][1]
+        
+        edit_window = Tasks2(self.root, self.authenticated_username, task_title, task_state)
+
 
 # funcion para borrar la tarea
     def delete_task(self, title):
@@ -180,9 +186,10 @@ class Tasks:
         self.task_window = customtkinter.CTkToplevel(self.root)
         self.root.withdraw()
         self.task_window.protocol("WM_DELETE_WINDOW", self.restore_dashboard)
-        customtkinter.set_appearance_mode("Dark") 
+        customtkinter.set_appearance_mode("Dark")
         customtkinter.set_default_color_theme("blue")
-        Task2 = Tasks2(self.task_window,self.authenticated_username)
+        Task2 = Tasks2(self.task_window, self.authenticated_username)
+
 # funcion para crear la ventana del llamado dashboard
     def open_dashboard(self):
         '''funcion para crear la ventana del llamado dashboard'''
@@ -199,7 +206,7 @@ class Tasks:
 def main():
     '''funcion que da inicio al loop de la GUI '''
     root = customtkinter.CTk()
-    task = Tasks(root)
+    task_interface = Tasks(root)
     root.mainloop()
 
 if __name__ == "__main__":

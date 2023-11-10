@@ -18,18 +18,18 @@ def center_window(root, width, height):
     
 class Tasks2:
 # funcion para la GUI
-    def __init__(self, root, authenticated_username):
+    def __init__(self, root, authenticated_username, task_title=None, task_state=None):
         '''funcion para la GUI'''
         self.db_manager = DatabaseManager()
         self.db_manager.create_task_tables()
         self.root = root
         self.authenticated_username=authenticated_username
         root.title('Gestor de tareas')
-        width, height = 350, 500
+        width, height = 350, 280
         self.root.geometry(f'{width}x{height}')
         center_window(self.root, width, height)
 
-        self.frame = customtkinter.CTkFrame(master=root,width=350,height=500,corner_radius=10)
+        self.frame = customtkinter.CTkFrame(master=root,width=330,height=65,corner_radius=10)
         self.frame.place(x=10, y=10)
 
         self.title_label =customtkinter.CTkLabel(master=self.frame, text="Gestor de Tareas", font=customtkinter.CTkFont(size=30),padx=50,pady=5)
@@ -70,7 +70,14 @@ class Tasks2:
         self.back_button = customtkinter.CTkButton(master =root, text="Atras",fg_color="#3D59AB",font=customtkinter.CTkFont(size=13),width=20,height=10,corner_radius=8, command=self.task_back_clicked)
         self.back_button.place(x=295, y=230, anchor=customtkinter.CENTER)
 
+        if task_title is not None:
+            self.task_name_entry.insert(0, task_title)
 
+        if task_state is not None:
+            self.state_list.set(task_state)
+    
+
+        
 # funcion para el boton de guardar edicion
     def save_edit_task(self):
         '''funcion para el boton de guardar edicion'''
@@ -99,6 +106,15 @@ class Tasks2:
             self.state_list.set("")  
             self.text.delete("1.0", tk.END)
             self.selected_task = None
+
+    # def load_task_details(self, title, description):
+    #     '''Cargar los detalles de la tarea para editar'''
+    #     self.task_name_entry.insert(0, title)
+    #     # Puedes hacer lo mismo con otros widgets para cargar datos
+
+    #     # Puedes ignorar la advertencia para estos argumentos
+    #     # ya que se utilizarán en otros métodos de la clase Tasks2
+    #     _ = description
 
 # funcion para el boton de agregar
     def save_task(self):

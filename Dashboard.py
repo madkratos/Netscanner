@@ -132,13 +132,13 @@ class Dashboard:
         self.task_window.protocol("WM_DELETE_WINDOW",self.restore_dashboard)
         customtkinter.set_appearance_mode("Dark") 
         customtkinter.set_default_color_theme("blue")
-        task = Tasks(self.task_window,self.authenticated_username)
+        task_interface = Tasks(self.task_window,self.authenticated_username)
 
 # funcion para la ventana principal de dashboard
 def main():
     '''funcion para la ventana principal de dashboard'''
     root = customtkinter.CTk()
-    dash= Dashboard(root)
+    dash = Dashboard(root)
     root.mainloop()
 
 if __name__ == "__main__":
