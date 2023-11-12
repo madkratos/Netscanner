@@ -116,8 +116,8 @@ class Tasks:
 
         task_title = self.task_list_treeview.item(selected_item)["values"][0]
         task_state = self.task_list_treeview.item(selected_item)["values"][1]
-        
-        edit_window = Tasks2(self.root, self.authenticated_username, task_title, task_state)
+        task_description = self.task_list_treeview.item(selected_item, "values")[2]
+        edit_window = Tasks2(self.root, self.authenticated_username, task_title, task_state,task_description)
 
 
 # funcion para borrar la tarea

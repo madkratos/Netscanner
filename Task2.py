@@ -18,7 +18,7 @@ def center_window(root, width, height):
     
 class Tasks2:
 # funcion para la GUI
-    def __init__(self, root, authenticated_username, task_title=None, task_state=None):
+    def __init__(self, root, authenticated_username, task_title=None, task_state=None,task_description=None):
         '''funcion para la GUI'''
         self.db_manager = DatabaseManager()
         self.db_manager.create_task_tables()
@@ -75,6 +75,9 @@ class Tasks2:
 
         if task_state is not None:
             self.state_list.set(task_state)
+        
+        if task_description is not None:
+            self.text.insert("1.0", task_description)
     
 
         
