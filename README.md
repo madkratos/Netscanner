@@ -24,8 +24,8 @@ NetScanner es un programa de escaneo de red que utiliza paquetes de ping ICMP pa
 
 Para utilizar el escáner de red, siga estos pasos:
 
-1. Clona el repositorio.
+1. Clona el repositorio o descarga el ejecutable del programa [NetScanner](https://github.com/madkratos/Netscanner/blob/develop/net.zip).
 
-2. Instale las dependencias requeridas.
+2. Instale las dependencias requeridas si clona el repositorio.
 
 3. Ejecute el programa y proporcione el rango de direcciones IP en notación CIDR.     

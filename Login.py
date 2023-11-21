@@ -42,6 +42,7 @@ class Login:
         
         self.username_entry = customtkinter.CTkEntry(master=self.frame,width=200,height=30,corner_radius=10)
         self.username_entry.place(relx=0.5, rely=0.6, anchor=tkinter.CENTER)
+        
     
         self.label_pass = customtkinter.CTkLabel(master=self.frame,text="Contraseña:",font=customtkinter.CTkFont(size=15))
         self.label_pass.place(relx=0.2, rely=0.7,anchor=tkinter.CENTER)
@@ -63,6 +64,7 @@ class Login:
         ''' funcion para validar usuario en la base de datos'''
         username = self.username_entry.get()
         password = self.password_entry.get()
+        self.username_entry.focus()
 
         if username and password:
             if self.db_manager.authenticate_user(username,password):

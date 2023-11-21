@@ -34,16 +34,19 @@ class Dashboard:
         self.login.place(x=260 ,y=10)
 
         self.login = customtkinter.CTkButton(master =root, text="Realizar Scan", command=self.scan_button_clicked,width=10,height=30,corner_radius=8)
-        self.login.place(relx=0.1, rely=0.2)
+        self.login.place(relx=0.1, rely=0.180)
 
         self.login = customtkinter.CTkButton(master =root, text="Rol de Usuarios", command=self.usuario_button_clicked,width=10,height=30,corner_radius=8)
-        self.login.place(relx=0.39, rely=0.2)
+        self.login.place(relx=0.39, rely=0.180)
 
         self.login = customtkinter.CTkButton(master =root, text="Tareas", command=self.task_button_clicked,width=10,height=30,corner_radius=8)
-        self.login.place(relx=0.72, rely=0.2)
+        self.login.place(relx=0.72, rely=0.180)
+
+        self.login = customtkinter.CTkButton(master =root, text="Acerca de", command=self.about_button_clicked,width=10,height=30,corner_radius=8)
+        self.login.place(relx=0.40, rely=0.920)
         
         self.net_text = tk.Text(root, height=20, width=42,bg="black",fg="#7FFF00")
-        self.net_text.place(x=4, y=160)
+        self.net_text.place(x=4, y=130)
 
         self.message_thread = threading.Thread(target=self.message, args=[["Bienvenido a ",
             """  _   _          _   
@@ -132,13 +135,25 @@ class Dashboard:
         self.task_window.protocol("WM_DELETE_WINDOW",self.restore_dashboard)
         customtkinter.set_appearance_mode("Dark") 
         customtkinter.set_default_color_theme("blue")
-        task = Tasks(self.task_window,self.authenticated_username)
+        task_interface = Tasks(self.task_window,self.authenticated_username)
+
+# funcion para el boton de acerca de 
+    def about_button_clicked(self):
+        '''funcion para el boton de acerca de'''
+        import customtkinter  
+        from About import About  
+        self.task_window = customtkinter.CTkToplevel(self.root)
+        self.root.withdraw()
+        self.task_window.protocol("WM_DELETE_WINDOW",self.restore_dashboard)
+        customtkinter.set_appearance_mode("Dark") 
+        customtkinter.set_default_color_theme("blue")
+        about = About(self.task_window,self.authenticated_username)
 
 # funcion para la ventana principal de dashboard
 def main():
     '''funcion para la ventana principal de dashboard'''
     root = customtkinter.CTk()
-    dash= Dashboard(root)
+    dash = Dashboard(root)
     root.mainloop()
 
 if __name__ == "__main__":
